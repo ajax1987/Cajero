@@ -14,7 +14,7 @@ pasos para ejecutar la aplicación
 
 4.- abrirl el Backend con el ide de su preferencia (utilice Eclipse).
 
-5.- para el fronted utilice Angular-JS (montar el fronted en un servidor apache utilice la herramienta Xampp).
+5.- para el fronted utilice Angular-JS (montar la carpeta denominada Cajero en un servidor apache utilice la herramienta Xampp).
 
 6.- ejecutar el Backend.
 
