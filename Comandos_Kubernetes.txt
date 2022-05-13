@@ -1,0 +1,59 @@
+PASOS PARA DESPLEGAR LA APP
+
+1-) mvn clean package -Pdocker
+2-) docker build -t cursoscapgemini .
+3-) kubectl create -f catalogocursos-mysql-pv.yaml
+4-) kubectl create -f catalogocursos-mysql-svc.yaml
+5-) kubectl create -f catalogocursos-mysql-deployment.yaml
+6-) kubectl create -f catalogocursos-webapp-svc.yaml
+7-) kubectl create -f catalogocursos-webapp-deployment.yaml
+
+ELIMINAR 
+
+1-) kubectl delete -f catalogocursos-mysql-pv.yaml
+2-) kubectl delete -f catalogocursos-mysql-svc.yaml
+3-) kubectl delete -f catalogocursos-mysql-deployment.yaml
+4-) kubectl delete -f catalogocursos-webapp-svc.yaml
+5-) kubectl delete -f catalogocursos-webapp-deployment.yaml
+6-) kubectl delete -f cluster-role-binding.yaml
+7-) kubectl delete -f service-account.yaml
+8-) kubectl delete -f cluster-role-binding-q.yaml
+9-) kubectl delete -f service-account-q.yaml
+
+PASOS OPEN DASHBOARD
+1-) kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.5.0/aio/deploy/recommended.yaml
+2-) kubectl proxy
+3-) http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+4-) kubectl create -f service-account.yaml
+5-) kubectl create -f cluster-role-binding.yaml
+6-) kubectl describe secret <name-secrets>
+
+ELIMINAR UN SERVICIO
+kubectl delete service catalogocursos-webapp-service -n default
+
+EXPONER UN SERVICIO
+kubectl expose deployment catalogocursos-webapp-deployment -n default --name catalogocursos-webapp-service --type ClusterIP --protocol TCP --port 8060 --target-port 8060
+
+kubectl expose deployment catalogocursos-mysql-deployment --type=LoadBalancer --name=catalogocursos-mysql-service -n default
+
+kubectl expose deployment catalogocursos-webapp-deployment --type=LoadBalancer --name=catalogocursos-webapp-service -n default
+
+OBTENER UN SERVICIO
+kubectl get services catalogocursos-mysql-service
+
+kubectl get services
+
+kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
+
+kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user | jsonpath="{.secrets[0].name}") | go-template="{{.data.token | 
+base64decode}}"
+
+kubectl -n default describe secret $(kubectl -n default get secret | grep admin-user | awk '{print $1}')
+
+kubectl create clusterrolebinding dashboard-admin-sa --clusterrole=cluster-admin --serviceaccount=default:dashboard-admin-sa
+
+kubectl get secrets
+
+kubectl delete secrets -n default <name-secrets>
+kubectl apply -f service-account.yaml
+kubectl apply -f cluster-role-binding.yaml
